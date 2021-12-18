@@ -45,12 +45,11 @@ loginRouter.post('/', async (req: Request, res: Response) => {
         id: user._id
     }
 
-    const token = jwt.sign(userForToken, SECRET);
+    const token: object = jwt.sign(userForToken, SECRET);
 
     return (LOGIN_MODE as LoginMode === LoginMode.LoginWithEmail)
         ? res.status(200).json({token, email: user.email, userId: user._id})
         : res.status(200).json({token, username: user.username, userId: user._id})
-
 
 })
 
