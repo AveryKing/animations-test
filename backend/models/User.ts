@@ -2,8 +2,8 @@ import {model, Schema, Model, Document} from 'mongoose';
 const uniqueValidator = require('mongoose-unique-validator');
 
 //Change these to enforce unique email/username requirements
-const REQUIRE_UNIQUE_EMAIL: boolean = true;
-const REQUIRE_UNIQUE_USERNAME: boolean = true;
+const REQUIRE_UNIQUE_EMAIL: boolean = false;
+const REQUIRE_UNIQUE_USERNAME: boolean = false;
 
 interface IUser extends Document {
     email: string;
