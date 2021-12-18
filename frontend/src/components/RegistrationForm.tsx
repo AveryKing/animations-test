@@ -1,15 +1,34 @@
-import React, {FormEvent, FC, useState, ChangeEvent} from 'react';
+import React, {FormEvent, FC, useState, ChangeEvent, useEffect} from 'react';
 import {TextField, Button, Typography, Grid, PaletteOptions, Paper, Grow, Fade, Link} from "@mui/material";
 import userService from '../services/user';
-
 
 const RegistrationForm: FC = () => {
     const [values, setValues] = useState({});
     const [emailError, setEmailError] = useState(false)
     const [usernameError, setUsernameError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
-    const [invalidCharactersError, setInvalidCharactersError] = useState(false)
     const [usernameMessage, setUsernameMessage] = useState('')
+    const [userData, setUserData] = useState([[], []])
+
+
+    useEffect(() => {
+        userService.getAllEmails()
+            .then(response => {
+                const newUserData = [...userData]
+                newUserData[0] = response
+                setUserData(newUserData)
+                return
+            })
+
+        userService.getAllUsernames()
+            .then(response => {
+                const newUserData = [...userData]
+                newUserData[1] = response
+                setUserData(newUserData)
+            })
+
+    }, [])
+
     const onChange = (event: ChangeEvent<HTMLInputElement>): Promise<boolean> | void => {
 
         const fieldName: string = event.target.name;
@@ -26,6 +45,7 @@ const RegistrationForm: FC = () => {
         if (fieldValue && fieldName !== 'password') {
             /** TODO: Modify this to grab all usernames/emails once
              *        rather than spamming API
+             *        and enforce maximum username length
              */
             userService.checkInUse(checkParams)
                 .then(response => {
