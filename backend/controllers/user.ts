@@ -15,7 +15,6 @@ userRouter.post('/', async (req: Request, res: Response) => {
     const saltRounds: number = 10;
     const password: string = await bcrypt.hash(req.body.password, saltRounds)
 
-
     const user: IUser = new User({
         email: email,
         username: username,
@@ -29,9 +28,7 @@ userRouter.post('/', async (req: Request, res: Response) => {
             error:'There was an error with user registration.'
         });
     })
-
-    return;
-
+    return
 })
 
 
