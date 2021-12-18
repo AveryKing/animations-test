@@ -8,33 +8,57 @@ const RegistrationForm: FC = () => {
     const [emailError, setEmailError] = useState(false)
     const [usernameError, setUsernameError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
-
+    const [invalidCharactersError, setInvalidCharactersError] = useState(false)
+    const [usernameMessage, setUsernameMessage] = useState('')
     const onChange = (event: ChangeEvent<HTMLInputElement>): Promise<boolean> | void => {
-        const fieldName = event.target.name;
-        const fieldValue = event.target.value;
 
+        const fieldName: string = event.target.name;
+        const fieldValue: string = event.target.value;
         setValues({...values, [fieldName]: fieldValue});
+
+        if (fieldName === 'password' && fieldValue) {
+            setPasswordError(fieldValue.length < 6)
+        } else {
+            setPasswordError(false)
+        }
+
         const checkParams = {[fieldName]: fieldValue};
         if (fieldValue && fieldName !== 'password') {
+            /** TODO: Modify this to grab all usernames/emails once
+             *        rather than spamming API
+             */
             userService.checkInUse(checkParams)
                 .then(response => {
-                    if (fieldName === 'email') setEmailError(response);
-                    else if (fieldName === 'username') setUsernameError(response);
+                    if (fieldName === 'email') {
+                        setEmailError(response);
+                    } else if (fieldName === 'username') {
+                        if (new RegExp(/^[a-z0-9]+$/i).test(fieldValue)) {
+                            setUsernameMessage('That username is already in use.')
+                            setUsernameError(response);
+                        } else {
+                            setUsernameMessage('That username is unacceptable.');
+                            setUsernameError(true)
+                        }
+                    }
                 })
         } else {
-            if (fieldName === 'email') setEmailError(false);
-            else if (fieldName === 'username') setUsernameError(false);
-            else if (fieldName === 'password') setPasswordError(fieldValue.length < 6);
+            if (fieldName === 'email') {
+                setEmailError(false)
+            } else if (fieldName === 'username') {
+                setUsernameError(false);
+            }
         }
 
     }
 
-    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        userService.create(values)
-            .then(response => {
-                console.log(response);
-            });
+        if (!emailError && !usernameError && !passwordError) {
+            userService.create(values)
+                .then(response => {
+                    console.log(response)
+                })
+        }
     }
 
     return (
@@ -67,16 +91,18 @@ const RegistrationForm: FC = () => {
                                 {usernameError ?
                                     <TextField error sx={{marginBottom: '10px'}} type='text' name='username'
                                                label='Username'
-                                               onChange={onChange} helperText="That username is already in use."/>
+                                               onChange={onChange} helperText={usernameMessage}/>
                                     :
                                     <TextField sx={{marginBottom: '10px'}} type='text' name='username' label='Username'
                                                onChange={onChange}/>}
                                 <br/>
                                 {passwordError ?
-                                    <TextField error sx={{marginBottom: '10px'}} type='password' name='password' label='Password'
+                                    <TextField error sx={{marginBottom: '10px'}} type='password' name='password'
+                                               label='Password'
                                                onChange={onChange} helperText='Your password is too short.'/>
-                                    : <TextField sx={{marginBottom: '10px'}} type='password' name='password' label='Password'
-                                           onChange={onChange}/>}<br/>
+                                    : <TextField sx={{marginBottom: '10px'}} type='password' name='password'
+                                                 label='Password'
+                                                 onChange={onChange}/>}<br/>
                                 <Button sx={{marginLeft: '25%'}} variant='outlined' type='submit'>Register</Button>
                             </form>
                             <br/>
