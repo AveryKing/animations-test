@@ -1,6 +1,6 @@
 import {model, Schema, Model, Document} from 'mongoose';
 
-interface IUser extends Document {
+interface User extends Document {
     email: string;
     username: string;
     password: string;
@@ -13,6 +13,6 @@ const UserSchema: Schema = new Schema({
     password: { type: String, required: true }
 });
 
-const User: Model<IUser> = model('User', UserSchema)
+const User: Model<User> = model('User', UserSchema)
 
 export default User
