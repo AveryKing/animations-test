@@ -22,7 +22,7 @@ app.get('/', (_req: Request, res: Response) => {
 })
 
 
-const PORT: number = 4500;
+const PORT: number = 6969;
 app.listen(PORT, () => {
     console.log(`Express listening on port ${PORT}`)
 })
