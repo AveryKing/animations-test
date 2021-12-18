@@ -1,17 +1,29 @@
 import express from 'express';
 import loginRouter from './controllers/login';
 import testRouter from './controllers/test';
-const app = express();
+import mongoose from 'mongoose';
 
+const app = express();
+const cors = require('cors')
+
+app.use(cors())
+app.use(express.json())
 app.use('/api/login', loginRouter)
 app.use('/api/test', testRouter)
 
-app.get('/', (_req,res) => {
+const connStr: string = 'mongodb+srv://fullstack:fullstack@cluster0.qynol.mongodb.net/account-system?retryWrites=true&w=majority';
+mongoose.connect(connStr).then(_result => {
+    console.log('Connected to MongoDB')
+}).catch(error => {
+    console.log(`Error connecting to MongoDB: ${error.message}`)
+});
+
+app.get('/', (_req, res) => {
     res.send('hello world!')
 })
 
 
 const PORT = 1337;
 app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`)
+    console.log(`Express listening on port ${PORT}`)
 })
