@@ -8,24 +8,15 @@ const RegistrationForm: FC = () => {
     const [usernameError, setUsernameError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
     const [usernameMessage, setUsernameMessage] = useState('')
-    const [userData, setUserData] = useState([[], []])
+    const [userData, setUserData] = useState({})
 
 
     useEffect(() => {
-        userService.getAllEmails()
+        userService.getUserData()
             .then(response => {
-                const newUserData = [...userData]
-                newUserData[0] = response
-                setUserData(newUserData)
-                return
+                setUserData(response)
             })
 
-        userService.getAllUsernames()
-            .then(response => {
-                const newUserData = [...userData]
-                newUserData[1] = response
-                setUserData(newUserData)
-            })
 
     }, [])
 
@@ -43,12 +34,11 @@ const RegistrationForm: FC = () => {
 
         const checkParams = {[fieldName]: fieldValue};
         if (fieldValue && fieldName !== 'password') {
-            /** TODO: Modify this to grab all usernames/emails once
-             *        rather than spamming API
-             *        and enforce maximum username length
+            /** TODO: enforce maximum username length
              */
-            userService.checkInUse(checkParams)
+            userService.checkInUse(userData,checkParams)
                 .then(response => {
+                    console.log(response)
                     if (fieldName === 'email') {
                         setEmailError(response);
                     } else if (fieldName === 'username') {
@@ -82,6 +72,7 @@ const RegistrationForm: FC = () => {
     }
 
     return (
+
         <Grid
             container
             spacing={0}
