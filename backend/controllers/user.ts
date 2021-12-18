@@ -40,7 +40,6 @@ userRouter.get('/getUserData', async (req: Request, res: Response) => {
             const emailArray: Array<string> = [];
             const userArray: Array<string> = [];
             users.forEach(user => {
-
                 emailArray.push(user.email);
                 userArray.push(user.username);
             })
@@ -48,7 +47,7 @@ userRouter.get('/getUserData', async (req: Request, res: Response) => {
             userData.push(userArray);
 
             res.json({
-                userData:userData
+                userData: userData
             });
         })
 
