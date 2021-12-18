@@ -1,6 +1,5 @@
 import {Request, Response} from 'express';
 import {User} from '../models/User'
-
 const loginRouter = require('express').Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -16,7 +15,7 @@ enum LoginMode {
  *  LOGIN_MODE can be changed to require email vs. username for login.
  *  Refer to 'LoginMode' enum which is defined above.
  **/
-const LOGIN_MODE: LoginMode = LoginMode.LoginWithEmail;
+const LOGIN_MODE: LoginMode = LoginMode.LoginWithUsername;
 
 loginRouter.post('/', async (req: Request, res: Response) => {
     const body = req.body;
