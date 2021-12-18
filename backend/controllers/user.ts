@@ -1,18 +1,20 @@
 import { Request, Response } from 'express';
 import { User, IUser } from '../models/User'
-
+const bcrypt = require('bcrypt');
 const userRouter = require('express').Router();
 
-userRouter.post('/', (req: Request, res: Response) => {
+userRouter.post('/', async (req: Request, res: Response) => {
     if(!req.body.email || !req.body.username || !req.body.password) {
         return res.json({
             error:'The parameters provided are invalid.'
         });
     }
 
-    const email = req.body.email;
-    const username = req.body.username;
-    const password = req.body.password;
+    const email: string = req.body.email;
+    const username: string = req.body.username;
+    const saltRounds: number = 10;
+    const password: string = await bcrypt.hash(req.body.password, saltRounds)
+
 
     const user: IUser = new User({
         email: email,
