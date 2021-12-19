@@ -1,6 +1,5 @@
 import {Request, Response} from 'express';
 import {User, IUser} from '../models/User'
-
 const bcrypt = require('bcrypt');
 const userRouter = require('express').Router();
 
@@ -53,7 +52,6 @@ userRouter.get('/getUserData', async (req: Request, res: Response) => {
 
 })
 
-
 /** Used to check if an email or username is already in use **/
 userRouter.post('/checkInUse', async (req: Request, res: Response) => {
 
@@ -63,17 +61,10 @@ userRouter.post('/checkInUse', async (req: Request, res: Response) => {
         });
     }
 
-
     let user: IUser = req.body.email
         ? await User.findOne({email: req.body.email})
         : await User.findOne({username: req.body.username});
-    /*
-        //This block enforces exact match for emails.
-        if(user && req.body.email) {
-            user = user.email === req.body.email ? user : null
-        }*/
 
-    console.log(user)
     return res.json({
         inUse: user ? true : false
     });
